@@ -1,4 +1,6 @@
 Jor::Application.routes.draw do
+  resources :travellers
+
   get "home/index"
 
   # The priority is based upon order of creation:

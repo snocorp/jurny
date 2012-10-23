@@ -1,0 +1,27 @@
+<h1>Listing travellers</h1>
+
+<table>
+  <tr>
+    <th>Email</th>
+    <th>Firstname</th>
+    <th>Lastname</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @travellers.each do |traveller| %>
+  <tr>
+    <td><%= traveller.email %></td>
+    <td><%= traveller.firstname %></td>
+    <td><%= traveller.lastname %></td>
+    <td><%= link_to 'Show', traveller %></td>
+    <td><%= link_to 'Edit', edit_traveller_path(traveller) %></td>
+    <td><%= link_to 'Destroy', traveller, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Traveller', new_traveller_path %>
