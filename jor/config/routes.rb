@@ -1,5 +1,7 @@
 Jor::Application.routes.draw do
   resources :travellers
+  
+  match 'signup' => 'travellers#signup'
 
   get "home/index"
 

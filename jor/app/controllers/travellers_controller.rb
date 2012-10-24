@@ -80,4 +80,13 @@ class TravellersController < ApplicationController
       format.json { head :no_content }
     end
   end
+  
+  def signup
+    @traveller = Traveller.new
+    
+    respond_to do |format|
+      format.html # signup.html.erb
+      format.json { render json: @traveller }
+    end
+  end
 end
