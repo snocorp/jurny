@@ -44,10 +44,12 @@ class TravellersController < ApplicationController
 
     respond_to do |format|
       if @traveller.save
-        format.html { redirect_to @traveller, notice: 'Traveller was successfully created.' }
-        format.json { render json: @traveller, status: :created, location: @traveller }
+        format.html { redirect_to root_path, notice: 'Success! Let your journey begin.' }
       else
-        format.html { render action: "new" }
+        #hide any errors about the passowrd digest
+	@traveller.errors.delete(:password_digest)
+
+        format.html { render action: "signup" }
         format.json { render json: @traveller.errors, status: :unprocessable_entity }
       end
     end

@@ -1,22 +1,56 @@
+<% provide(:title, 'sign up') %>
 <h1>Sign Up</h1>
 
-<form accept-charset="UTF-8" action="/travellers" class="new_traveller" id="new_traveller" method="post"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /><input name="authenticity_token" type="hidden" value="skE95Ecuj1hFzbPjaTeTxQcojm0vz1NGc346vV3nX4w=" /></div>
+<% if @traveller.errors.any? %>
+  <div id="error_explanation">
+    <div class="alert alert-error">
+      The form contains <%= pluralize(@traveller.errors.count, "error") %>.
+    </div>
+    <ul>
+    <% @traveller.errors.full_messages.each do |msg| %>
+      <li><%= msg %></li>
+    <% end %>
+    </ul>
+  </div>
+<% end %>
 
-  <div class="field">
-    <label for="traveller_email">Email</label>
-    <input id="traveller_email" name="traveller[email]" size="30" type="text" />
+<%= form_for(@traveller, :html => { :class => "form-horizontal"}) do |f| %>
+
+  <div class="control-group">
+    <%= f.label :email, class: "control-label" %>
+    <div class="controls">
+      <%= f.text_field :email %>
+    </div>
   </div>
-  <div class="field">
-    <label for="traveller_firstname">Firstname</label>
-    <input id="traveller_firstname" name="traveller[firstname]" size="30" type="text" />
+  <div class="control-group">
+    <%= f.label :firstname, "First Name", class: "control-label" %>
+    <div class="controls">
+      <%= f.text_field :firstname %>
+    </div>
   </div>
-  <div class="field">
-    <label for="traveller_lastname">Lastname</label>
-    <input id="traveller_lastname" name="traveller[lastname]" size="30" type="text" />
+  <div class="control-group">
+    <%= f.label :lastname, "Last Name", class: "control-label" %>
+    <div class="controls">
+      <%= f.text_field :lastname %>
+    </div>
   </div>
-  <div class="actions">
-    <input name="commit" type="submit" value="Signup" />
+  <div class="control-group">
+    <%= f.label :password, class: "control-label" %>
+    <div class="controls">
+      <%= f.password_field :password %>
+    </div>
   </div>
-</form>
+  <div class="control-group">
+    <%= f.label :password_confirmation, "Confirm", class: "control-label" %>
+    <div class="controls">
+      <%= f.password_field :password_confirmation %>
+    </div>
+  </div>
+  <div class="control-group">
+    <div class="controls">
+      <%= f.submit "Create account", class: "btn btn-primary" %>
+    </div>
+  </div>
+<% end %>
 
 <%= link_to 'Back', root_path %>
