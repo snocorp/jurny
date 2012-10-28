@@ -3,12 +3,32 @@ require 'spec_helper'
 describe "Traveller pages" do
 
   subject { page }
-
-  describe "signup page" do
-    before { visit signup_path }
-
-    it { should have_selector('h1',    text: 'Sign Up') }
-    it { should have_selector('title', text: 'sign up') }
+  
+  describe "edit page" do
+    let(:traveller) { FactoryGirl.create(:traveller) }
+    before do 
+      sign_in traveller
+      visit edit_traveller_path(traveller)
+    end
+    
+    it { should have_selector('title', text: 'edit traveller') }
+    it { should have_selector('div.container a', href: traveller_path(traveller), text: 'Profile') }
+    
+    it { should have_field('Email', with: traveller.email ) }
+    it { should have_field('First Name', with: traveller.firstname ) }
+    it { should have_field('Last Name', with: traveller.lastname ) }
+    it { should have_field('Password', type: 'password' ) }
+    it { should have_field('Confirm', type: 'password' ) }
+  end
+  
+  describe "edit page for admin user" do
+    let(:traveller) { FactoryGirl.create(:admin) }
+    before do 
+      sign_in traveller
+      visit edit_traveller_path(traveller)
+    end
+    
+    it { should have_selector('div.container a', href: travellers_path, text: 'Travellers') }
   end
 
   describe "profile page" do
@@ -22,6 +42,34 @@ describe "Traveller pages" do
     it { should have_selector('p', text => traveller.firstname) }
     it { should have_selector('p', text => traveller.lastname) }
     it { should have_selector('p', text => traveller.email) }
+  end
+  
+  describe "profile page for admin user" do
+    let(:traveller) { FactoryGirl.create(:admin) }
+    before do 
+      sign_in traveller
+      visit traveller_path(traveller)
+    end
+    
+    it { should have_selector('div.container a', href: travellers_path, text: 'Travellers') }
+  end
+
+  describe "signup page" do
+    before { visit signup_path }
+
+    it { should have_selector('h1',    text: 'Sign Up') }
+    it { should have_selector('title', text: 'sign up') }
+  end
+  
+  describe "travellers page for admin user" do
+    let(:traveller) { FactoryGirl.create(:admin) }
+    before do 
+      sign_in traveller
+      visit travellers_path
+    end
+    
+    it { should have_selector('h1',    text: 'Travellers') }
+    it { should have_selector('title', text: 'travellers') }
   end
 
   describe "signup" do
