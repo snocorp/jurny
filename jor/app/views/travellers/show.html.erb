@@ -1,5 +1,4 @@
 <% provide(:title, 'profile') %>
-<p id="notice"><%= notice %></p>
 
 <p>
   <b>Email:</b>
@@ -17,5 +16,7 @@
 </p>
 
 
-<%= link_to 'Edit', edit_traveller_path(@traveller) %> |
-<%= link_to 'Back', travellers_path %>
+<%= link_to 'Edit', edit_traveller_path(@traveller) %>
+<% if @current_user.admin %>
+| <%= link_to 'Travellers', travellers_path %>
+<% end %>

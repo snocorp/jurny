@@ -1,6 +1,9 @@
+<% provide(:title, 'edit traveller') %>
 <h1>Editing traveller</h1>
 
 <%= render 'form' %>
 
-<%= link_to 'Show', @traveller %> |
-<%= link_to 'Back', travellers_path %>
+<%= link_to 'Profile', @traveller %>
+<% if @current_user.admin %>
+| <%= link_to 'Travellers', travellers_path %>
+<% end %>

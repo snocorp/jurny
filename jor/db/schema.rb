@@ -11,17 +11,20 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121024224345) do
+ActiveRecord::Schema.define(:version => 20121027195631) do
 
   create_table "travellers", :force => true do |t|
     t.string   "email"
     t.string   "firstname"
     t.string   "lastname"
-    t.datetime "created_at",      :null => false
-    t.datetime "updated_at",      :null => false
+    t.datetime "created_at",                         :null => false
+    t.datetime "updated_at",                         :null => false
     t.string   "password_digest"
+    t.string   "remember_token"
+    t.boolean  "admin",           :default => false, :null => false
   end
 
   add_index "travellers", ["email"], :name => "index_travellers_on_email", :unique => true
+  add_index "travellers", ["remember_token"], :name => "index_travellers_on_remember_token"
 
 end

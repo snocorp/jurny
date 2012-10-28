@@ -13,7 +13,10 @@ describe "Traveller pages" do
 
   describe "profile page" do
     let(:traveller) { FactoryGirl.create(:traveller) }
-    before { visit traveller_path(traveller) }
+    before do 
+      sign_in traveller
+      visit traveller_path(traveller)
+    end
 
     it { should have_selector('title', text: 'profile') }
     it { should have_selector('p', text => traveller.firstname) }
@@ -25,7 +28,7 @@ describe "Traveller pages" do
 
     before { visit signup_path }
 
-    let(:submit) { "Create account" }
+    let(:submit) { "Sign Up" }
 
     describe "with invalid information" do
       it "should not create a user" do
