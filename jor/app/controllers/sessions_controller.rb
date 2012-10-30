@@ -6,7 +6,7 @@ class SessionsController < ApplicationController
     traveller = Traveller.find_by_email(params[:session][:email].downcase)
     if traveller && traveller.authenticate(params[:session][:password])
       sign_in traveller
-      redirect_to root_path
+      redirect_back_or root_path
     else
       flash.now[:error] = 'Invalid email/password combination' # Not quite right!
       render 'new'

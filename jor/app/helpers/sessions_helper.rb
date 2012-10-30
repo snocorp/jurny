@@ -21,4 +21,17 @@ module SessionsHelper
   def current_user
     @current_user ||= Traveller.find_by_remember_token(cookies[:remember_token])
   end
+  
+  def current_user?(traveller)
+    traveller == current_user
+  end
+  
+  def redirect_back_or(default)
+    redirect_to(session[:return_to] || default)
+    session.delete(:return_to)
+  end
+
+  def store_location
+    session[:return_to] = request.url
+  end
 end
