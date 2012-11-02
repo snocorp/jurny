@@ -1,5 +1,7 @@
 class Traveller < ActiveRecord::Base
   attr_accessible :email, :firstname, :lastname, :password, :password_confirmation
+  has_many :trips, :foreign_key => 'owner_id'
+  
   has_secure_password
   
   before_save { |traveller| traveller.email = email.downcase }
@@ -8,9 +10,12 @@ class Traveller < ActiveRecord::Base
   VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
   validates :email, presence: true, format: { with: VALID_EMAIL_REGEX },
                     uniqueness: { case_sensitive: false }
-  validates :password, presence: true, length: { minimum: 6 }
-  validates :password_confirmation, presence: true
+  validates :password, length: { minimum: 6 }, :on => :create
+  validates :password_confirmation, presence: true, :on => :create
   
+  def fullname
+    self.firstname+' '+self.lastname
+  end
   
   private
 

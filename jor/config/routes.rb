@@ -1,4 +1,6 @@
 Jor::Application.routes.draw do
+  resources :trips
+
   resources :sessions, only: [:new, :create, :destroy]
   resources :travellers
   

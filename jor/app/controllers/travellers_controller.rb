@@ -43,6 +43,21 @@ class TravellersController < ApplicationController
     
     @traveller = Traveller.find(params[:id])
   end
+  
+  def signup
+    @form_action = 'Sign Up'
+    
+    if !signed_in?
+      @traveller = Traveller.new
+
+      respond_to do |format|
+        format.html # signup.html.erb
+        format.json { render json: @traveller }
+      end
+    else
+      redirect_to root_path, notice: 'You\'re already signed up.'
+    end
+  end
 
   # POST /travellers
   # POST /travellers.json
@@ -63,11 +78,11 @@ class TravellersController < ApplicationController
           format.json { render json: @traveller.errors, status: :unprocessable_entity }
         end
       end
-    elsif current_user.admin
+    elsif current_user.admin?
       
       respond_to do |format|
         if @traveller.save
-          format.html { redirect_to root_path, notice: 'Success! Let your journey begin.' }
+          format.html { redirect_to root_path, notice: 'Traveller created.' }
         else
           #hide any errors about the password digest
           @traveller.errors.delete(:password_digest)
@@ -85,9 +100,18 @@ class TravellersController < ApplicationController
   def update
     @traveller = Traveller.find(params[:id])
 
-    if signed_in? && (@traveller.id == current_user.id || current_user.admin)
+    if signed_in? && (@traveller.id == current_user.id || current_user.admin?)
       respond_to do |format|
-        if @traveller.update_attributes(params[:traveller])
+        @traveller.email = params[:traveller][:email]
+        @traveller.firstname = params[:traveller][:firstname]
+        @traveller.lastname = params[:traveller][:lastname]
+        
+        if current_user.admin? && !params[:traveller][:admin].nil?
+          @traveller.admin = params[:traveller][:admin]
+          params[:traveller].delete(:admin)
+        end
+        
+        if @traveller.save
           flash[:success] = "Profile updated"
           sign_in @traveller
           format.html { redirect_to @traveller }
@@ -104,26 +128,21 @@ class TravellersController < ApplicationController
   # DELETE /travellers/1.json
   def destroy
     @traveller = Traveller.find(params[:id])
-    @traveller.destroy
-
-    respond_to do |format|
-      format.html { redirect_to travellers_url }
-      format.json { head :no_content }
-    end
-  end
-  
-  def signup
-    @form_action = 'Sign Up'
     
-    if !signed_in?
-      @traveller = Traveller.new
+    if signed_in? && (@traveller.id == current_user.id || current_user.admin?)
+      @traveller.destroy
 
-      respond_to do |format|
-        format.html # signup.html.erb
-        format.json { render json: @traveller }
+      if @traveller.id == current_user.id
+        sign_out
+        redirect_to root_path
+      else
+        respond_to do |format|
+          format.html { redirect_to travellers_url }
+          format.json { head :no_content }
+        end
       end
     else
-      redirect_to root_path, notice: 'You\'re already signed up.'
+      redirect_to root_path, notice: 'Permission denied'
     end
   end
   
@@ -137,11 +156,11 @@ class TravellersController < ApplicationController
     end
 
     def admin_user
-      redirect_to(root_path, notice: "Permission denied") unless current_user.admin
+      redirect_to(root_path, notice: "Permission denied") unless current_user.admin?
     end
 
     def correct_user
       @traveller = Traveller.find(params[:id])
-      redirect_to(root_path, notice: "Permission denied") unless current_user?(@traveller) || current_user.admin
+      redirect_to(root_path, notice: "Permission denied") unless current_user?(@traveller) || current_user.admin?
     end
 end
