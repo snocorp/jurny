@@ -6,7 +6,7 @@
         <div class="well well-tiny">
           <ul class="nav nav-list">
             <li class="nav-header">Your Trips</li>
-            <% current_user.trips.each do |trip| %>
+            <% current_user.owned_trips.each do |trip| %>
             <li><%= link_to trip.name, trip_path(trip) %></li>
             <% end %>
             <li><%= link_to content_tag(:span, '', :class => 'icon-plus-sign') + 'Create a trip', new_trip_path %></li>
@@ -16,8 +16,11 @@
       <div class="span4">
         <div class="well well-tiny">
           <ul class="nav nav-list">
-            <li class="nav-header">Your Destinations</li>
-            <li>no destinations yet</li>
+            <li class="nav-header">Trip Memberships</li>
+            <% current_user.trips.each do |trip| %>
+            <li><%= link_to trip.name, trip_path(trip) %></li>
+            <% end %>
+            <li><%= link_to content_tag(:span, '', :class => 'icon-plus-sign') + 'Join a trip', trip_add_path %></li>
           </ul>
         </div>
       </div>

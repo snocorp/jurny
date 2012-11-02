@@ -1,6 +1,8 @@
 class Traveller < ActiveRecord::Base
   attr_accessible :email, :firstname, :lastname, :password, :password_confirmation
-  has_many :trips, :foreign_key => 'owner_id'
+  has_many :owned_trips, :class_name => 'Trip', :foreign_key => 'owner_id'
+  has_many :trip_memberships
+  has_many :trips, :through => :trip_memberships
   
   has_secure_password
   

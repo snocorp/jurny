@@ -1,7 +1,20 @@
 <h1><%= @trip.name %></h1>
 <small><%= link_to @trip.owner.fullname, traveller_path(@trip.owner) %></small>
-
-<p><%= @trip.summary %></p>
+<div class="row">
+  <div class="span9">
+    <p><%= @trip.summary %></p>
+  </div>
+  <div class="span3">
+    <div class="well well-tiny">
+      <ul class="nav nav-list">
+        <li class="nav-header">Members</li>
+        <% @trip.travellers.each do |traveller| %>
+        <li><%= link_to traveller.fullname, traveller_path(traveller) %></li>
+        <% end %>
+      </ul>
+    </div>
+  </div>
+</div>
 
 <%= link_to 'Edit', edit_trip_path(@trip) %> |
 <%= link_to 'Back', trips_path %>

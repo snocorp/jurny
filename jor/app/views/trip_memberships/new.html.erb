@@ -1,0 +1,19 @@
+<% provide(:title, "join a trip") %>
+<h1>Join a Trip</h1>
+
+<%= form_for(:trip_membership, url: trip_memberships_path, :html => { :class => "form-horizontal"}) do |f| %>
+  <% @trips.each do |trip| %>
+  <div class="control-group">
+    <%= f.label trip.name, class: "control-label" %>
+    <div class="controls">
+      <%= radio_button_tag "trip", trip.id %>
+    </div>
+  </div>
+  <% end %>
+  <div class="control-group">
+    <div class="controls">
+      <%= f.submit "Join", class: "btn btn-primary" %>
+    </div>
+  </div>
+
+<% end %>
