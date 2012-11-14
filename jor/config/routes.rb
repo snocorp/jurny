@@ -1,19 +1,16 @@
 Jor::Application.routes.draw do
-  resources :travellers
-  resources :trips
-  resources :trip_memberships, only: [:new, :create, :destroy]
-  resources :sessions, only: [:new, :create, :destroy]
-  
-  
   
   match 'signup' => 'travellers#signup'
   match 'signin' => 'sessions#new'
   match 'signout' => 'sessions#destroy', via: :delete
-  
-  match 'trip_add' => 'trip_memberships#new'
-  match 'trip_drop' => 'trip_memberships#destroy', via: :delete
+  match 'trips/all' => 'trips#all'
 
   get "home/index"
+  
+  resources :travellers
+  resources :trips
+  resources :trip_memberships, only: [:new, :create, :destroy]
+  resources :sessions, only: [:new, :create, :destroy]
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

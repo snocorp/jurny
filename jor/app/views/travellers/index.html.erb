@@ -3,19 +3,16 @@
 
 <table class="table table-striped">
   <tr>
+    <th>Name</th>
     <th>Email</th>
-    <th>Firstname</th>
-    <th>Lastname</th>
     <th></th>
   </tr>
 
 <% @travellers.each do |traveller| %>
   <tr>
+    <td><%= link_to traveller.fullname, traveller %></td>
     <td><%= traveller.email %></td>
-    <td><%= traveller.firstname %></td>
-    <td><%= traveller.lastname %></td>
-    <td><%= link_to 'Show', traveller %> |
-    <%= link_to 'Edit', edit_traveller_path(traveller) %> |
+    <td><%= link_to 'Edit', edit_traveller_path(traveller) %> |
     <%= link_to 'Destroy', traveller, method: :delete, data: { confirm: 'Are you sure?' } %></td>
   </tr>
 <% end %>

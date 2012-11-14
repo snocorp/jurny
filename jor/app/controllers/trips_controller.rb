@@ -1,87 +1,59 @@
 class TripsController < ApplicationController
   before_filter :signed_in_user
+  before_filter :admin_user, only: [:all]
   
-  # GET /trips
-  # GET /trips.json
   def index
     @trips = current_user.trips
+  end
+  
+  def all
+    @trips = Trip.all
 
-    respond_to do |format|
-      format.html # index.html.erb
-      format.json { render json: @trips }
-    end
+    render 'index'
   end
 
-  # GET /trips/1
-  # GET /trips/1.json
   def show
     @trip = Trip.find(params[:id])
-
-    respond_to do |format|
-      format.html # show.html.erb
-      format.json { render json: @trip }
-    end
   end
 
-  # GET /trips/new
-  # GET /trips/new.json
   def new
     @trip = current_user.trips.new
-
-    respond_to do |format|
-      format.html # new.html.erb
-      format.json { render json: @trip }
-    end
   end
 
-  # GET /trips/1/edit
   def edit
     @trip = Trip.find(params[:id])
   end
 
-  # POST /trips
-  # POST /trips.json
   def create
-    @trip = current_user.trips.new(params[:trip])
+    @trip = current_user.owned_trips.new(params[:trip])
 
-    respond_to do |format|
-      if @trip.save
-        format.html { redirect_to @trip, notice: 'Trip was successfully created.' }
-        format.json { render json: @trip, status: :created, location: @trip }
-      else
-        format.html { render action: "new" }
-        format.json { render json: @trip.errors, status: :unprocessable_entity }
-      end
+    if @trip.save
+      redirect_to @trip, notice: 'Trip was successfully created.'
+    else
+      render action: "new"
     end
   end
 
-  # PUT /trips/1
-  # PUT /trips/1.json
   def update
     @trip = Trip.find(params[:id])
 
-    respond_to do |format|
-      if @trip.update_attributes(params[:trip])
-        format.html { redirect_to @trip, notice: 'Trip was successfully updated.' }
-        format.json { head :no_content }
-      else
-        format.html { render action: "edit" }
-        format.json { render json: @trip.errors, status: :unprocessable_entity }
-      end
+    if @trip.update_attributes(params[:trip])
+      redirect_to @trip, notice: 'Trip was successfully updated.'
+    else
+      render action: "edit"
     end
   end
 
-  # DELETE /trips/1
-  # DELETE /trips/1.json
   def destroy
     @trip = Trip.find(params[:id])
     
-    if @trip.owner_id == current_user.id
+    if @trip.owner_id == current_user.id || current_user.admin?
       @trip.destroy
 
-      respond_to do |format|
-        format.html { redirect_to trips_url }
-        format.json { head :no_content }
+      if current_user.admin?
+        redirect_to trips_all_url
+      else
+        redirect_to trips_url
       end
     else
       redirect_to root_path, notice: "Permission denied"
@@ -95,5 +67,9 @@ class TripsController < ApplicationController
         store_location
         redirect_to signin_url, notice: "Please sign in."
       end
+    end
+
+    def admin_user
+      redirect_to(root_path, notice: "Permission denied") unless current_user.admin?
     end
 end

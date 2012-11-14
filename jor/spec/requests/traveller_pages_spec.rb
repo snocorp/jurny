@@ -66,17 +66,39 @@ describe "Traveller pages" do
         end
       end
 
-      describe "for admin user" do
+      describe "for regular user viewing different user" do
         before do 
-          sign_in admin
+          sign_in traveller
           visit traveller_path(admin)
         end
 
         it { should have_selector('title', text: 'profile') }
         it { should have_text_for(admin) }
 
+        it "should not have a link to the travellers list" do
+          should_not have_selector('div.container a', href: travellers_path, text: 'Travellers')
+        end
+
+        it "should not have a link to delete the traveller" do
+          should_not have_selector('div.container a', href: traveller_path(admin, method: :delete), text: 'Delete Account')
+        end
+      end
+
+      describe "for admin user" do
+        before do 
+          sign_in admin
+          visit traveller_path(traveller)
+        end
+
+        it { should have_selector('title', text: 'profile') }
+        it { should have_text_for(traveller) }
+
         it "should have a link to the travellers list" do
           should have_selector('div.container a', href: travellers_path, text: 'Travellers')
+        end
+
+        it "should have a link to delete the traveller" do
+          should have_selector("div.container a", :href => traveller_path(traveller), :content => "Delete Account")
         end
       end
     end
@@ -105,6 +127,12 @@ describe "Traveller pages" do
 
         it { should have_selector('h1',    text: 'Travellers') }
         it { should have_selector('title', text: 'travellers') }
+        
+        it "should list each user" do
+          Traveller.all.each do |user|
+            page.should have_selector('a', text: user.fullname)
+          end
+        end
       end      
       
       describe "for signed out user" do
@@ -144,9 +172,6 @@ describe "Traveller pages" do
     let(:submit) { "Update" }
     
     describe "page" do
-      let(:traveller) { FactoryGirl.create(:traveller) }
-      let(:admin) { FactoryGirl.create(:admin) }
-
       describe "for regular user" do
         before do 
           sign_in traveller

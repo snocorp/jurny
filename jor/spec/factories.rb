@@ -15,4 +15,16 @@ FactoryGirl.define do
     password_confirmation "password123"
     admin     true
   end
+  
+  factory :trip do
+    name "Test Trip"
+    summary "Summary for test trip."
+    owner
+  end
+  
+  factory :admin_trip, class: Trip do
+    name "Admin Test Trip"
+    summary "Summary for test trip for admin."
+    owner
+  end
 end

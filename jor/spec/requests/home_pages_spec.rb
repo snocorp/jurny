@@ -15,11 +15,15 @@ describe "HomePages" do
     
     describe "when user is signed in" do
       let(:user) { FactoryGirl.create(:traveller) }
+      let(:trip) { FactoryGirl.create(:trip, owner: user) }
       before { sign_in user }
       
       it { should have_selector('title', text: 'dashboard') }
-      it { should have_selector('h2',    text: 'Your trips') }
-      it { should have_selector('h2',    text: 'Your destinations') }
+      it { should have_selector('li',    text: 'Your Trips') }
+      it { should have_selector('li',    text: 'Your Destinations') }
+      it { should have_selector('li',    text: 'Trip Memberships') }
+      it { should have_link('Create a trip', href: new_trip_path) }
+      it { should have_link('Join a trip', href: new_trip_membership_path) }
       
       it { should have_link('Home', href: root_path) }
       it { should have_link('Profile', href: traveller_path(user) ) }
@@ -33,6 +37,8 @@ describe "HomePages" do
       before { sign_in user }
       
       it { should have_link('Admin', href: '#') }
+      it { should have_link('Trips', href: trips_all_path) }
+      it { should have_link('Travellers', href: travellers_path) }
     end
   end
 end

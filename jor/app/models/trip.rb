@@ -6,5 +6,5 @@ class Trip < ActiveRecord::Base
   has_many :travellers, :through => :trip_memberships
   
   validates :name, presence: true
-  validates :owner, presence: true
+  validates :owner_id, presence: true
 end

@@ -1,29 +1,14 @@
 class TravellersController < ApplicationController
   before_filter :signed_in_user, only: [:index, :show, :new, :edit, :update]
-  before_filter :correct_user,   only: [:show, :edit, :update]
+  before_filter :correct_user,   only: [:edit, :update, :destroy]
   before_filter :admin_user, only: [:index, :new]
   
-  
-  # GET /travellers
-  # GET /travellers.json
   def index
     @travellers = Traveller.all
-
-    respond_to do |format|
-      format.html # index.html.erb
-      format.json { render json: @travellers }
-    end
   end
 
-  # GET /travellers/1
-  # GET /travellers/1.json
   def show
     @traveller = Traveller.find(params[:id])
-
-    respond_to do |format|
-      format.html # show.html.erb
-      format.json { render json: @traveller }
-    end
   end
 
   # GET /travellers/new
@@ -31,10 +16,6 @@ class TravellersController < ApplicationController
     @form_action = 'Create Traveller'
     
     @traveller = Traveller.new
-
-    respond_to do |format|
-      format.html # new.html.erb
-    end
   end
 
   # GET /travellers/1/edit
@@ -49,47 +30,33 @@ class TravellersController < ApplicationController
     
     if !signed_in?
       @traveller = Traveller.new
-
-      respond_to do |format|
-        format.html # signup.html.erb
-        format.json { render json: @traveller }
-      end
     else
       redirect_to root_path, notice: 'You\'re already signed up.'
     end
   end
 
-  # POST /travellers
-  # POST /travellers.json
   def create
     @traveller = Traveller.new(params[:traveller])
     
     if !signed_in?
-      
-      respond_to do |format|
-        if @traveller.save
-          sign_in @traveller
-          format.html { redirect_to root_path, notice: 'Success! Let your journey begin.' }
-        else
-          #hide any errors about the password digest
-          @traveller.errors.delete(:password_digest)
+      if @traveller.save
+        sign_in @traveller
+        redirect_to root_path, notice: 'Success! Let your journey begin.'
+      else
+        #hide any errors about the password digest
+        @traveller.errors.delete(:password_digest)
 
-          format.html { render action: "signup" }
-          format.json { render json: @traveller.errors, status: :unprocessable_entity }
-        end
+        render action: "signup"
       end
     elsif current_user.admin?
       
-      respond_to do |format|
-        if @traveller.save
-          format.html { redirect_to root_path, notice: 'Traveller created.' }
-        else
-          #hide any errors about the password digest
-          @traveller.errors.delete(:password_digest)
+      if @traveller.save
+        redirect_to root_path, notice: 'Traveller created.'
+      else
+        #hide any errors about the password digest
+        @traveller.errors.delete(:password_digest)
 
-          format.html { render action: "new" }
-          format.json { render json: @traveller.errors, status: :unprocessable_entity }
-        end
+        render action: "new"
       end
     else
       redirect_to root_path, notice: 'Permission denied'
@@ -101,31 +68,27 @@ class TravellersController < ApplicationController
     @traveller = Traveller.find(params[:id])
 
     if signed_in? && (@traveller.id == current_user.id || current_user.admin?)
-      respond_to do |format|
-        @traveller.email = params[:traveller][:email]
-        @traveller.firstname = params[:traveller][:firstname]
-        @traveller.lastname = params[:traveller][:lastname]
-        
-        if current_user.admin? && !params[:traveller][:admin].nil?
-          @traveller.admin = params[:traveller][:admin]
-          params[:traveller].delete(:admin)
-        end
-        
-        if @traveller.save
-          flash[:success] = "Profile updated"
-          sign_in @traveller
-          format.html { redirect_to @traveller }
-        else
-          format.html { render action: "edit" }
-        end
+      @traveller.email = params[:traveller][:email]
+      @traveller.firstname = params[:traveller][:firstname]
+      @traveller.lastname = params[:traveller][:lastname]
+
+      if current_user.admin? && !params[:traveller][:admin].nil?
+        @traveller.admin = params[:traveller][:admin]
+        params[:traveller].delete(:admin)
+      end
+
+      if @traveller.save
+        flash[:success] = "Profile updated"
+        sign_in @traveller
+        redirect_to @traveller
+      else
+        render action: "edit"
       end
     else
       redirect_to root_path, notice: 'Permission denied'
     end
   end
 
-  # DELETE /travellers/1
-  # DELETE /travellers/1.json
   def destroy
     @traveller = Traveller.find(params[:id])
     
@@ -136,10 +99,7 @@ class TravellersController < ApplicationController
         sign_out
         redirect_to root_path
       else
-        respond_to do |format|
-          format.html { redirect_to travellers_url }
-          format.json { head :no_content }
-        end
+        redirect_to travellers_url
       end
     else
       redirect_to root_path, notice: 'Permission denied'

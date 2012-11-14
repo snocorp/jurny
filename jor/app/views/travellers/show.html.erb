@@ -1,24 +1,14 @@
 <% provide(:title, 'profile') %>
-
+<h1><%= @traveller.fullname %></h1>
 <p>
   <b>Email:</b>
   <%= @traveller.email %>
 </p>
 
-<p>
-  <b>Firstname:</b>
-  <%= @traveller.firstname %>
-</p>
 
-<p>
-  <b>Lastname:</b>
-  <%= @traveller.lastname %>
-</p>
-
-
-<%= link_to 'Edit', edit_traveller_path(@traveller) %>
 <% if @traveller.id == @current_user.id || @current_user.admin? %>
-| <%= link_to 'Delete Account', @traveller, method: :delete, data: { confirm: 'Are you sure?' } %>
+<%= link_to 'Edit', edit_traveller_path(@traveller) %>
+| <%= link_to 'Delete Account', @traveller, method: :put, data: { confirm: 'Are you sure?' } %>
 <% end %>
 <% if @current_user.admin? %>
 | <%= link_to 'Travellers', travellers_path %>

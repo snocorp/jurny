@@ -16,7 +16,11 @@ describe Traveller do
   it { should respond_to(:password) }
   it { should respond_to(:password_confirmation) }
   it { should respond_to(:remember_token) }
-  it { should respond_to(:authenticate) }  
+  it { should respond_to(:authenticate) }
+  it { should respond_to(:owned_trips) }
+  it { should respond_to(:trip_memberships) }
+  it { should respond_to(:trips) }
+  
   
   describe "when email address is already taken" do
     before do
@@ -59,6 +63,10 @@ describe Traveller do
     end
   end
   
+  describe "return value of fullname method" do
+    specify { @user.fullname.should eq @user.firstname+' '+@user.lastname }
+  end
+  
   describe "with a password that's too short" do
     before { @user.password = @user.password_confirmation = "a" * 5 }
     it { should be_invalid }
@@ -77,5 +85,12 @@ describe Traveller do
   describe "remember token" do
     before { @user.save }
     its(:remember_token) { should_not be_blank }
+  end
+  
+  describe "when a traveller with trips is destroyed" do
+    before do
+      @trip = @user.owned_trips.new(name: "Eurotrip", summary: "Travelling to europe!")
+    end
+    pending "determine what to do"
   end
 end
