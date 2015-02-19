@@ -1,9 +1,1 @@
 
-bin
-pkg
-
-src/github.com/golang/lint/
-
-src/github.com/nsf/gocode/
-
-src/golang.org/x/tools/
